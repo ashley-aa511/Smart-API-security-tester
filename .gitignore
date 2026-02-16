@@ -1,0 +1,29 @@
+﻿# Environment files
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*.class
+*.so
+.Python
+venv/
+env/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# Reports
+reports/
+*.pdf
+*.html
+
+# Azure
+.azure/
+
+# OS
+.DS_Store
+Thumbs.db
