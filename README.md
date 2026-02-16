@@ -44,7 +44,7 @@ An interactive, intelligent API security scanner that automatically tests APIs f
 
 ```bash
 # Clone or download the project
-cd api-security-tester
+cd Smart-API-security-tester
 
 # Install dependencies
 pip install -r requirements.txt --break-system-packages
