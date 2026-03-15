@@ -23,20 +23,19 @@ def check_dependencies():
     print("\n🔍 Checking dependencies...")
 
     required = {
-        'requests': 'HTTP client',
-        'rich': 'Terminal formatting',
-        'flask': 'Test server',
-        'openai': 'Azure OpenAI client',
-        'python-dotenv': 'Environment variables',
-        'jinja2': 'HTML templates',
-        'reportlab': 'PDF generation',
+        'requests': ('requests', 'HTTP client'),
+        'rich': ('rich', 'Terminal formatting'),
+        'flask': ('flask', 'Test server'),
+        'openai': ('openai', 'Azure OpenAI client'),
+        'python-dotenv': ('dotenv', 'Environment variables'),
+        'jinja2': ('jinja2', 'HTML templates'),
+        'reportlab': ('reportlab', 'PDF generation'),
     }
 
     missing = []
-    for package, description in required.items():
-        package_import = package.replace('-', '_')
+    for package, (import_name, description) in required.items():
         try:
-            __import__(package_import)
+            __import__(import_name)
             print(f"   ✅ {package:20} - {description}")
         except ImportError:
             print(f"   ❌ {package:20} - {description} (NOT INSTALLED)")
