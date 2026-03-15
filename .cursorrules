@@ -1,0 +1,455 @@
+You are an expert in building AI-powered security testing tools using Microsoft's AI platform, Azure services, and agentic architectures. You specialize in Python development, API security testing (OWASP API Security Top 10), and creating intelligent multi-agent systems for DevOps automation.
+
+# Project Context
+
+This is the Smart API Security Tester - an intelligent, agentic API security scanner being built for the Microsoft AI Dev Days Hackathon (February-March 2026). The project must use Microsoft Foundry, Microsoft Agent Framework, Azure MCP, and GitHub Copilot Agent Mode.
+
+## Core Technologies
+
+- **Language**: Python 3.11+
+- **AI Framework**: Semantic Kernel (Microsoft Agent Framework)
+- **AI Service**: Azure OpenAI (GPT-4)
+- **API Framework**: FastAPI
+- **Deployment**: Azure Container Apps
+- **Storage**: Azure Blob Storage
+- **Monitoring**: Azure Application Insights
+- **CI/CD**: GitHub Actions
+- **Agent Communication**: Azure MCP (Model Context Protocol)
+
+## Architecture
+
+The system uses a multi-agent architecture where specialized AI agents collaborate:
+
+1. **Coordinator Agent** - Plans security scans using AI analysis
+2. **Scanner Agent** - Executes OWASP security tests
+3. **Analysis Agent** - AI-powered vulnerability assessment
+4. **Remediation Agent** - Generates code fixes
+5. **Report Agent** - Creates comprehensive reports
+
+# Code Style & Standards
+
+## Python Guidelines
+
+- Use Python 3.11+ features (type hints, async/await)
+- Follow PEP 8 with Black formatter
+- Use type annotations for all function signatures
+- Prefer async/await over synchronous code
+- Use dataclasses for structured data
+- Docstrings: Google style with Args, Returns, Raises
+
+## Naming Conventions
+
+- Classes: PascalCase (e.g., `CoordinatorAgent`)
+- Functions/Methods: snake_case (e.g., `plan_scan`)
+- Constants: UPPER_SNAKE_CASE (e.g., `MAX_RETRIES`)
+- Private methods: prefix with underscore (e.g., `_internal_method`)
+- Agent files: suffix with `_agent.py` (e.g., `coordinator_agent.py`)
+
+## File Structure
+
+```
+src/
+├── agents/           # AI agent implementations
+├── core/            # Existing scanner logic
+├── services/        # Azure service integrations
+├── api/             # FastAPI endpoints
+└── reports/         # Report generators
+
+infra/               # Azure infrastructure (Bicep)
+tests/              # Unit and integration tests
+demo/               # Demo vulnerable API
+docs/               # Documentation
+```
+
+# Agent Development Guidelines
+
+## Agent Structure Template
+
+Every agent should follow this pattern:
+
+```python
+"""
+[Agent Name] - Brief description
+Uses Azure OpenAI for [specific capability]
+"""
+from typing import Dict, List, Optional
+from openai import AzureOpenAI
+import os
+from dotenv import load_dotenv
+
+class [AgentName]Agent:
+    """
+    Detailed agent description.
+
+    This agent uses Azure OpenAI to:
+    1. Primary capability
+    2. Secondary capability
+    3. Tertiary capability
+    """
+
+    def __init__(self):
+        """Initialize agent with Azure OpenAI client."""
+        load_dotenv()
+        self.client = AzureOpenAI(
+            api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+            api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+            azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
+        )
+        self.deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME")
+
+    async def main_capability(self, input_data: Dict) -> Dict:
+        """
+        Main agent capability description.
+
+        Args:
+            input_data: Description of input
+
+        Returns:
+            Description of output
+
+        Raises:
+            ValueError: If input is invalid
+        """
+        # Implementation
+        pass
+```
+
+## AI Prompt Engineering
+
+When creating prompts for Azure OpenAI:
+
+- Be specific about expected output format (preferably JSON)
+- Include role definition in system message
+- Set appropriate temperature (0.2-0.4 for analysis, 0.6-0.8 for creative tasks)
+- Use `response_format={"type": "json_object"}` for structured outputs
+- Include examples in prompts when possible
+- Handle API errors gracefully with retries
+
+## Error Handling
+
+```python
+# Always wrap AI calls in try-except
+try:
+    response = await self.client.chat.completions.create(...)
+    result = json.loads(response.choices[0].message.content)
+except json.JSONDecodeError as e:
+    logger.error(f"Failed to parse AI response: {e}")
+    # Fallback logic
+except Exception as e:
+    logger.error(f"AI service error: {e}")
+    # Retry or fallback
+```
+
+# Security Testing Guidelines
+
+## OWASP API Security Top 10 (2023)
+
+Focus on these vulnerabilities:
+
+- API1:2023 - Broken Object Level Authorization (BOLA)
+- API2:2023 - Broken Authentication
+- API3:2023 - Broken Object Property Level Authorization
+- API4:2023 - Unrestricted Resource Consumption
+- API5:2023 - Broken Function Level Authorization
+- API7:2023 - Server Side Request Forgery (SSRF)
+- API8:2023 - Security Misconfiguration
+- API9:2023 - Improper Inventory Management
+- API10:2023 - Injection Vulnerabilities (SQL, NoSQL)
+
+## Test Implementation
+
+- Each test should be non-destructive (read-only when possible)
+- Include rate limiting to avoid DDoS-like behavior
+- Log all test attempts for audit trail
+- Return structured results with evidence
+- Include remediation recommendations
+
+## Severity Classification
+
+- **CRITICAL**: Authentication bypass, SQL injection, RCE
+- **HIGH**: Authorization flaws, SSRF, sensitive data exposure
+- **MEDIUM**: Security misconfigurations, missing headers
+- **LOW**: Information disclosure, verbose errors
+- **INFO**: Informational findings, best practices
+
+# Azure Integration Guidelines
+
+## Environment Variables
+
+Always use environment variables for sensitive data:
+
+```python
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
+AZURE_OPENAI_API_KEY = os.getenv("AZURE_OPENAI_API_KEY")
+AZURE_STORAGE_CONNECTION_STRING = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
+```
+
+## Azure Service Integration
+
+- Use `azure-identity` for authentication (DefaultAzureCredential)
+- Implement retry logic with exponential backoff
+- Log all Azure service calls for debugging
+- Handle Azure service exceptions gracefully
+- Use connection pooling for efficiency
+
+## Telemetry
+
+Add Application Insights to all agents:
+
+```python
+from azure.monitor.opentelemetry import configure_azure_monitor
+from opentelemetry import trace
+
+configure_azure_monitor()
+tracer = trace.get_tracer(__name__)
+
+with tracer.start_as_current_span("agent_operation"):
+    # Agent logic
+    pass
+```
+
+# FastAPI Development
+
+## API Endpoint Structure
+
+```python
+from fastapi import FastAPI, HTTPException, BackgroundTasks
+from pydantic import BaseModel
+
+app = FastAPI(title="API Security Tester")
+
+class ScanRequest(BaseModel):
+    target_url: str
+    headers: Dict[str, str] = {}
+    tests: List[str] = ["all"]
+
+@app.post("/api/v1/scan")
+async def create_scan(request: ScanRequest, background_tasks: BackgroundTasks):
+    """
+    Initiate a security scan.
+
+    Args:
+        request: Scan configuration
+        background_tasks: FastAPI background tasks
+
+    Returns:
+        Scan ID and status
+    """
+    # Implementation
+    pass
+```
+
+## API Best Practices
+
+- Use Pydantic models for request/response validation
+- Implement proper HTTP status codes
+- Add OpenAPI documentation with examples
+- Use background tasks for long-running scans
+- Implement rate limiting
+- Add CORS middleware for web clients
+- Use dependency injection for services
+
+# Testing Guidelines
+
+## Unit Tests
+
+```python
+import pytest
+import pytest_asyncio
+from unittest.mock import Mock, patch
+
+@pytest.mark.asyncio
+async def test_coordinator_agent_plan_scan():
+    """Test coordinator agent creates valid scan plan."""
+    agent = CoordinatorAgent()
+
+    with patch.object(agent.client.chat.completions, 'create') as mock_create:
+        mock_create.return_value = Mock(
+            choices=[Mock(message=Mock(content='{"test": "data"}'))]
+        )
+
+        result = await agent.plan_scan("https://api.example.com")
+
+        assert "scan_plan" in result
+        assert "api_analysis" in result
+```
+
+## Integration Tests
+
+- Test agent-to-agent communication
+- Test Azure service integrations
+- Test end-to-end scan workflows
+- Use test fixtures for consistent data
+- Mock external APIs when appropriate
+
+# Git & Collaboration
+
+## Commit Messages
+
+Use conventional commits:
+
+- `feat:` New feature
+- `fix:` Bug fix
+- `docs:` Documentation changes
+- `test:` Adding/updating tests
+- `refactor:` Code refactoring
+- `chore:` Maintenance tasks
+
+Example: `feat: implement analysis agent with vulnerability assessment`
+
+## Branch Strategy
+
+- `main` - Production-ready code
+- `dev` - Integration branch (create PRs here)
+- `staging` - Pre-production testing
+- `feature/*` - New features
+- `fix/*` - Bug fixes
+
+## PR Guidelines
+
+- Create PRs to `dev` branch, not `main`
+- Include description of changes
+- Reference related issues
+- Add testing notes
+- Tag reviewer (@partner-username)
+
+# Hackathon-Specific Requirements
+
+## Must Include
+
+- ✅ Microsoft Foundry/Azure OpenAI integration
+- ✅ Microsoft Agent Framework (Semantic Kernel)
+- ✅ Azure deployment (Container Apps)
+- ✅ GitHub Copilot usage (document in commits)
+- ✅ Azure MCP for agent communication
+- ✅ Public GitHub repository
+- ✅ Developed in VS Code
+
+## Submission Requirements
+
+- Working demo (2-minute video)
+- Architecture diagram
+- Public GitHub repo with source code
+- Documentation (README, setup guide)
+- Deployed to Azure
+- Demo showing real security scan
+
+## Judging Criteria (20% each)
+
+1. **Technological Implementation** - Clean code, effective use of Microsoft tools
+2. **Agentic Design** - Sophisticated multi-agent orchestration
+3. **Real-World Impact** - Solves actual security testing problems
+4. **User Experience** - Clear demo, intuitive interface
+5. **Category Adherence** - Fits "Agentic DevOps" or "AI Applications" track
+
+# Common Patterns
+
+## Agent Communication via MCP
+
+```python
+from azure_mcp import MCPServer, tool
+
+server = MCPServer("security-scanner")
+
+@server.tool("scan_api")
+async def scan_api_tool(target_url: str, auth_token: str) -> Dict:
+    """Expose security scanning via MCP protocol."""
+    coordinator = CoordinatorAgent()
+    plan = await coordinator.plan_scan(target_url)
+    # Execute scan
+    return results
+```
+
+## Logging
+
+```python
+import logging
+from rich.logging import RichHandler
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(message)s",
+    handlers=[RichHandler(rich_tracebacks=True)]
+)
+
+logger = logging.getLogger(__name__)
+logger.info("Agent initialized")
+```
+
+## Async Context Management
+
+```python
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def agent_context():
+    """Manage agent lifecycle."""
+    agent = CoordinatorAgent()
+    try:
+        yield agent
+    finally:
+        # Cleanup
+        await agent.close()
+```
+
+# Performance Optimization
+
+- Use `asyncio.gather()` for parallel operations
+- Implement caching for repeated AI calls
+- Use connection pooling for Azure services
+- Batch requests when possible
+- Set appropriate timeouts
+- Monitor token usage for cost optimization
+
+# Documentation Requirements
+
+Every agent and major function needs:
+
+- Clear docstring with purpose
+- Args and return type documentation
+- Usage examples in comments
+- Error handling explanation
+- Integration points with other agents
+
+# Important Notes
+
+- **Only test APIs you own or have permission to test**
+- **Include rate limiting in all security tests**
+- **Never commit sensitive credentials to git**
+- **Use .env for all configuration**
+- **Test locally before pushing to remote**
+- **Keep commits small and focused**
+- **Document AI model decisions in code comments**
+- **Prioritize hackathon requirements over perfection**
+
+# Quick Commands Reference
+
+```bash
+# Development
+python -m venv venv
+.\venv\Scripts\Activate  # Windows
+pip install -r requirements.txt
+python -m pytest tests/
+
+# Git workflow
+git checkout dev
+git pull origin dev
+git checkout -b feature/your-feature
+git add .
+git commit -m "feat: your feature"
+git push origin feature/your-feature
+
+# Azure deployment
+az login
+az containerapp up --name api-security-agent --resource-group rg-security --source .
+
+# Run locally
+uvicorn src.api.main:app --reload
+```
+
+Remember: This is a hackathon - focus on demonstrating the core concept with Microsoft's AI platform rather than building a production-perfect system. Show impressive AI-powered security analysis, clean agent orchestration, and real Azure integration. Speed and impact over perfection!
