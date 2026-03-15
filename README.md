@@ -1,374 +1,212 @@
-# 🛡️ API Security Tester
+# Smart API Security Tester
 
-An interactive, intelligent API security scanner that automatically tests APIs for common vulnerabilities based on the OWASP API Security Top 10 and generates comprehensive security reports in multiple formats.
+An intelligent, agentic API security scanner built for the **Microsoft AI Dev Days Hackathon (2026)**.
+Combines OWASP API Security Top 10 testing with AI-powered analysis using Azure OpenAI.
 
-## Features
+---
 
-### 🎯 Comprehensive Security Testing
-- **OWASP API Security Top 10 Coverage**
-  - API1:2023 - Broken Object Level Authorization (BOLA)
-  - API2:2023 - Broken Authentication
-  - API3:2023 - Broken Object Property Level Authorization
-  - API4:2023 - Unrestricted Resource Consumption
-  - API5:2023 - Broken Function Level Authorization
-  - API7:2023 - Server Side Request Forgery (SSRF)
-  - API8:2023 - Security Misconfiguration
-  - API9:2023 - Improper Inventory Management
-  - API10:2023 - Injection Vulnerabilities (SQL, NoSQL)
+## What It Does
 
-### 🤖 Interactive Agent
-- Guides you through the testing process
-- Configurable scan parameters
-- Custom header support (API keys, authentication tokens)
-- Selective test execution
-- Real-time progress feedback
+1. **Scans** any REST API for the OWASP API Security Top 10 (2023) vulnerabilities
+2. **AI Planning** — an Azure OpenAI agent analyzes the target API first and creates a prioritized, reasoned test plan
+3. **Reports** — exports findings as JSON, HTML (interactive), or PDF
+4. **REST API** — exposes the scanner as a FastAPI service for CI/CD integration
 
-### 📊 Multi-Format Reporting
-- **JSON** - Structured data for integration with other tools
-- **HTML** - Interactive, visual reports with charts
-- **PDF** - Professional reports for stakeholders
-- Severity-based color coding
-- Detailed remediation recommendations
-
-### 🔍 Smart Detection
-- SQL Injection testing
-- NoSQL Injection testing
-- Authentication bypass attempts
-- Authorization flaw detection
-- SSRF vulnerability scanning
-- Security header verification
-- Rate limiting checks
-- Mass assignment testing
-
-## Installation
-
-```bash
-# Clone or download the project
-cd Smart-API-security-tester
-
-# Install dependencies
-pip install -r requirements.txt --break-system-packages
-```
+---
 
 ## Quick Start
 
-### Basic Usage
+```bash
+git clone https://github.com/ashley-aa511/Smart-API-security-tester.git
+cd Smart-API-security-tester
+
+python -m venv venv
+.\venv\Scripts\Activate        # Windows
+source venv/bin/activate       # macOS / Linux
+
+pip install -r requirements.txt
+python verify_setup.py         # check everything is installed
+```
+
+### Run the scanner (no Azure needed)
 
 ```bash
-python3 main.py
+# Terminal 1 — start the vulnerable test target
+python test_api_server.py
+
+# Terminal 2 — run a full scan
+python test_full_scan.py
 ```
 
-The tool will guide you through:
-1. **Target Configuration** - Enter your API URL
-2. **Authentication** - Add custom headers (API keys, tokens)
-3. **Test Selection** - Choose specific tests or run all
-4. **Scan Execution** - Watch real-time progress
-5. **Report Generation** - Export in your preferred format(s)
+### Run the interactive CLI
 
-### Example Session
+```bash
+python main.py
+# Enter target URL, optional headers, select tests, export report
+```
+
+---
+
+## Multi-Agent Architecture
 
 ```
-╔═══════════════════════════════════════════════════════╗
-║       API Security Tester                             ║
-║       OWASP API Security Top 10 Scanner               ║
-╚═══════════════════════════════════════════════════════╝
-
-Configure Your Security Scan
-
-Enter target API URL: https://api.example.com
-
-Add custom headers? (e.g., Authorization, API-Key)
-Press Enter to skip, or enter in format 'Key: Value'
-Header (or press Enter to continue): Authorization: Bearer token123
-Header (or press Enter to continue): 
-
-Select Tests to Run
-Available test categories:
-
-  1. [CRITICAL] API1:2023 - Broken Object Level Authorization
-  2. [CRITICAL] API2:2023 - Broken Authentication
-  3. [HIGH] API3:2023 - Broken Object Property Level Authorization
-  4. [HIGH] API4:2023 - Unrestricted Resource Consumption
-  5. [CRITICAL] API5:2023 - Broken Function Level Authorization
-  6. [HIGH] API7:2023 - Server Side Request Forgery
-  7. [HIGH] API8:2023 - Security Misconfiguration
-  8. [MEDIUM] API9:2023 - Improper Inventory Management
-  9. [CRITICAL] API10:2023 - Injection Vulnerabilities
-  10. Run ALL tests (recommended)
-
-Enter your choice (number or 'all'): all
-
-Review Configuration
-Target: https://api.example.com
-Headers: 1 custom header(s)
-Tests: 9 test(s)
-
-Proceed with scan? (y/n): y
+┌─────────────────────────────────────────────────────────┐
+│                    User / REST API                      │
+└───────────────────────┬─────────────────────────────────┘
+                        │
+            ┌───────────▼────────────┐
+            │   Coordinator Agent    │  ← Azure OpenAI (GPT-4o-mini)
+            │  Analyzes target API   │    Reasons about risk profile,
+            │  Creates test plan     │    auth method, and domain
+            └───────────┬────────────┘
+                        │ prioritized plan
+            ┌───────────▼────────────┐
+            │    Security Scanner    │  ← core/scanner.py
+            │  Executes OWASP tests  │    9 test categories
+            └───────────┬────────────┘
+                        │ results
+            ┌───────────▼────────────┐
+            │    Report Generator    │  ← JSON / HTML / PDF
+            └────────────────────────┘
 ```
+
+---
+
+## OWASP Coverage
+
+| # | Category | Severity | What It Tests |
+|---|----------|----------|---------------|
+| API1:2023 | Broken Object Level Authorization | CRITICAL | Accessing other users' data without ownership check |
+| API2:2023 | Broken Authentication | CRITICAL | Admin endpoints without auth, weak passwords |
+| API3:2023 | Excessive Data Exposure | HIGH | Responses leaking more fields than needed |
+| API4:2023 | Unrestricted Resource Consumption | MEDIUM | Missing rate limiting |
+| API5:2023 | Broken Function Level Authorization | HIGH | Admin functions accessible to regular users |
+| API7:2023 | Server Side Request Forgery | HIGH | API fetching attacker-controlled URLs |
+| API8:2023 | Security Misconfiguration | MEDIUM | Missing security headers, verbose errors |
+| API9:2023 | Improper Inventory Management | MEDIUM | Exposed API docs, deprecated endpoints |
+| API10:2023 | Injection | CRITICAL | SQL injection patterns in query parameters |
+
+---
 
 ## Project Structure
 
 ```
-api-security-tester/
-├── main.py                      # Main application entry point
-├── requirements.txt             # Python dependencies
+Smart-API-security-tester/
+├── main.py                          # Interactive CLI scanner
+├── test_api_server.py               # Intentionally vulnerable Flask API (scan target)
+├── test_full_scan.py                # Non-interactive end-to-end scan script
+├── test_helpers.py                  # Utility function tests
+├── test_integration.py              # AI + scanner integration test
+├── verify_setup.py                  # Environment verification script
+│
 ├── core/
-│   └── scanner.py              # Scanner engine and orchestration
+│   └── scanner.py                   # SecurityScanner + ScanSession engine
+│
+├── src/
+│   ├── agents/
+│   │   └── coordinator_agent.py     # Azure OpenAI AI planning agent
+│   ├── api/
+│   │   └── main.py                  # FastAPI REST service
+│   └── services/
+│       └── azure_openai_service.py  # Shared Azure OpenAI wrapper
+│
 ├── tests/
-│   └── vulnerability_tests.py  # OWASP test implementations
-├── reports/
-│   ├── html_generator.py       # HTML report generation
-│   └── pdf_generator.py        # PDF report generation
-└── README.md                    # This file
+│   ├── vulnerability_tests.py       # All 9 OWASP test implementations
+│   └── agents/
+│       └── test_coordinator_agent.py # Unit tests (mocked Azure)
+│
+├── tests/test_scanner.py            # Unit tests for scanner engine
+│
+├── html_generator.py                # HTML report builder
+├── pdf_generator.py                 # PDF report builder
+└── reports/                         # Report package (re-exports generators)
 ```
-
-## Understanding the Results
-
-### Severity Levels
-
-- **CRITICAL** 🔴 - Immediate action required
-  - Complete authentication bypass
-  - SQL/NoSQL injection
-  - Unauthorized admin access
-  
-- **HIGH** 🟠 - High priority remediation
-  - Missing rate limiting
-  - SSRF vulnerabilities
-  - Property-level authorization issues
-  
-- **MEDIUM** 🟡 - Should be addressed
-  - Security header misconfigurations
-  - API version management issues
-  
-- **LOW** 🔵 - Minor improvements
-  - Server version disclosure
-  - Verbose error messages
-  
-- **INFO** ℹ️ - Informational findings
-  - API documentation exposure
-  - Multiple API versions detected
-
-### Report Components
-
-Each vulnerability report includes:
-- **Description** - What the vulnerability is
-- **Evidence** - Proof of the finding
-- **URL & Method** - Affected endpoint
-- **Recommendation** - How to fix it
-- **Severity** - Risk level
-
-## Advanced Usage
-
-### Custom Test Configuration
-
-You can modify test parameters by editing `tests/vulnerability_tests.py`:
-
-```python
-# Example: Adjust rate limiting test
-class UnrestrictedResourceConsumptionTest(SecurityTest):
-    def run(self, target_url: str, headers: Dict = None, **kwargs):
-        # Change from 15 to 50 requests
-        for i in range(50):
-            # ... test logic
-```
-
-### Integration with CI/CD
-
-Use the JSON output for automated security testing:
-
-```bash
-# Run scan and capture JSON output
-python3 main.py --target https://api.example.com --format json --output report.json
-
-# Parse results in your pipeline
-python3 -c "
-import json
-with open('report.json') as f:
-    report = json.load(f)
-    critical = report['summary']['critical']
-    if critical > 0:
-        exit(1)  # Fail build
-"
-```
-
-### Custom Headers Examples
-
-```
-# API Key Authentication
-API-Key: your-api-key-here
-
-# Bearer Token
-Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
-
-# Basic Auth
-Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=
-
-# Custom Headers
-X-API-Version: v2
-X-Request-ID: 12345
-```
-
-## Security Testing Best Practices
-
-### ⚠️ Important Warnings
-
-1. **Only test APIs you own or have explicit permission to test**
-2. **Rate limiting tests may trigger DDoS protection**
-3. **Some tests may modify data - use test environments**
-4. **Review your organization's security testing policies first**
-
-### Testing Workflow
-
-1. **Staging First** - Always test in non-production environments
-2. **Incremental** - Start with safe tests, gradually increase
-3. **Document** - Keep records of what was tested and when
-4. **Fix & Retest** - Remediate issues and verify fixes
-5. **Regular Scans** - Schedule periodic security assessments
-
-### Interpreting Results
-
-- **False Positives** - Automated tools may flag non-issues
-- **Manual Review** - Critical findings should be manually verified
-- **Context Matters** - Some "vulnerabilities" may be intentional design
-- **Layered Security** - One scan doesn't find everything
-
-## Common Use Cases
-
-### 1. Pre-Production Security Check
-```bash
-# Before deploying to production
-python3 main.py
-# Target: https://staging-api.example.com
-# Export: All formats for stakeholder review
-```
-
-### 2. API Development Security Gate
-```bash
-# During development sprint
-# Test specific vulnerability categories
-# Select: Authentication & Authorization tests
-```
-
-### 3. Compliance Audit
-```bash
-# Generate comprehensive PDF reports
-# Run all tests for complete coverage
-# Include in compliance documentation
-```
-
-### 4. Security Research
-```bash
-# Study API security patterns
-# Use JSON export for analysis
-# Build custom tooling on top
-```
-
-## Extending the Tool
-
-### Adding New Tests
-
-Create a new test class in `tests/vulnerability_tests.py`:
-
-```python
-class CustomSecurityTest(SecurityTest):
-    def __init__(self):
-        super().__init__(
-            "My Custom Test",
-            "CUSTOM:2024",
-            "HIGH"
-        )
-    
-    def run(self, target_url: str, headers: Dict = None, **kwargs):
-        results = []
-        
-        # Your test logic here
-        
-        return results
-```
-
-Register it in the `ALL_TESTS` list:
-
-```python
-ALL_TESTS = [
-    # ... existing tests
-    CustomSecurityTest,
-]
-```
-
-### Adding New Report Formats
-
-Create a new generator in `reports/`:
-
-```python
-# reports/markdown_generator.py
-def generate_markdown_report(session_data: Dict, output_file: str):
-    # Generate markdown report
-    pass
-```
-
-## Troubleshooting
-
-### Common Issues
-
-**Connection Errors**
-- Verify target URL is accessible
-- Check if API requires VPN or specific network
-- Test with curl first: `curl -I https://api.example.com`
-
-**Authentication Failures**
-- Verify header format is correct
-- Check if token/key is valid
-- Try the endpoint manually with Postman/curl
-
-**No Vulnerabilities Found**
-- This is good! But verify tests are running
-- Check if API has aggressive rate limiting
-- Some APIs may block automated tools
-
-**SSL/TLS Errors**
-- Some tests disable SSL verification for testing
-- In production, always use valid certificates
-- Check certificate validity with: `openssl s_client -connect api.example.com:443`
-
-## Dependencies
-
-- **requests** - HTTP client for API testing
-- **rich** - Beautiful terminal output
-- **reportlab** - PDF generation
-- **jinja2** - HTML templating
-- **pyyaml** - Configuration handling
-
-## Limitations
-
-This tool provides automated testing for common vulnerabilities but:
-- Cannot detect all security issues
-- May produce false positives
-- Does not replace manual security audits
-- Cannot test business logic flaws
-- Limited to black-box testing approach
-
-## Contributing
-
-To improve the tool:
-1. Add more OWASP test cases
-2. Enhance existing tests with better detection
-3. Add support for GraphQL APIs
-4. Implement authentication scheme detection
-5. Add more report formats
-
-## License
-
-This is a security testing tool for educational and authorized testing purposes only.
-
-## Credits
-
-Built with ❤️ for the security community.
-
-Based on:
-- OWASP API Security Top 10 (2023)
-- Industry best practices
-- Real-world penetration testing experience
 
 ---
 
-**Remember: Only test APIs you own or have explicit permission to test!**
+## Azure OpenAI Setup
+
+For the AI planning features:
+
+1. Create an **Azure OpenAI** resource in [portal.azure.com](https://portal.azure.com)
+2. Deploy **gpt-4o-mini** via [ai.azure.com](https://ai.azure.com) → Deployments
+3. Copy your endpoint and key into `.env`:
+
+```bash
+AZURE_OPENAI_ENDPOINT=https://YOUR-RESOURCE.openai.azure.com/
+AZURE_OPENAI_API_KEY=your-key-here
+AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o-mini
+AZURE_OPENAI_API_VERSION=2024-02-15-preview
+```
+
+4. Test the connection:
+```bash
+python src/agents/coordinator_agent.py
+```
+
+See **TESTING_GUIDE.md** for the full step-by-step setup walkthrough.
+
+---
+
+## Running Tests
+
+```bash
+# All unit tests — no Azure or server needed
+python -m pytest tests/ -v     # 30 tests, all should pass
+```
+
+---
+
+## FastAPI Web Service
+
+```bash
+uvicorn src.api.main:app --reload --port 8000
+```
+
+- Swagger UI: **http://localhost:8000/docs**
+- Start a scan: `POST /api/v1/scan`
+- Get results: `GET /api/v1/scan/{id}`
+- AI plan only: `POST /api/v1/plan`
+
+---
+
+## Severity Levels
+
+| Level | Examples |
+|-------|---------|
+| CRITICAL | Auth bypass, SQL injection, BOLA giving access to any user |
+| HIGH | SSRF, function-level authorization bypass, data over-exposure |
+| MEDIUM | Missing rate limiting, security header gaps, public API docs |
+| LOW | Server version disclosure, verbose errors |
+| INFO | API documentation found, informational notes |
+
+---
+
+## Report Formats
+
+| Format | Contents |
+|--------|---------|
+| **JSON** | Full machine-readable results — use for CI/CD or further analysis |
+| **HTML** | Visual report with charts, color-coded by severity, opens in browser |
+| **PDF** | Professional printable report for stakeholders |
+
+---
+
+## Important
+
+> Only test APIs you own or have explicit written permission to test.
+> The test server (`test_api_server.py`) is safe — it is an intentionally
+> vulnerable demo application designed for this purpose.
+
+---
+
+## Tech Stack
+
+- **Python 3.11+**, Flask, FastAPI, Uvicorn
+- **Azure OpenAI** (GPT-4o-mini) — AI planning agent
+- **Rich** — terminal UI
+- **ReportLab** — PDF generation
+- **Jinja2** — HTML templating
+- **pytest** — unit testing
+
+Built for the **Microsoft AI Dev Days Hackathon — Agentic DevOps track**.
