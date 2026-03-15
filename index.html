@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart API Security Tester - AI-Powered OWASP Scanner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.6); }
+        }
+        .glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-black/30 backdrop-blur-lg z-50 border-b border-purple-500/20">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                </div>
+                <span class="text-xl font-bold">Smart API Security Tester</span>
+            </div>
+            <div class="flex gap-6">
+                <a href="#features" class="hover:text-purple-400 transition">Features</a>
+                <a href="#demo" class="hover:text-purple-400 transition">Demo</a>
+                <a href="#docs" class="hover:text-purple-400 transition">Docs</a>
+                <a href="https://github.com/ashley-aa511/Smart-API-security-tester" target="_blank" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg transition">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="inline-block bg-purple-500/20 border border-purple-500/30 rounded-full px-4 py-2 mb-6">
+                        <span class="text-purple-300 text-sm font-semibold">🤖 AI-Powered Security Testing</span>
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                        Intelligent API Security
+                        <span class="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Testing Platform</span>
+                    </h1>
+                    <p class="text-xl text-gray-300 mb-8">
+                        Automated OWASP API Security Top 10 scanner with Azure OpenAI integration. 
+                        Smart test prioritization, comprehensive reports, and enterprise-ready deployment.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#get-started" class="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 px-8 py-4 rounded-lg font-semibold text-lg transition glow">
+                            Get Started
+                        </a>
+                        <a href="#demo" class="border-2 border-purple-500 hover:bg-purple-500/10 px-8 py-4 rounded-lg font-semibold text-lg transition">
+                            Watch Demo
+                        </a>
+                    </div>
+                    <div class="flex gap-8 mt-8 text-sm text-gray-400">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>9 OWASP Tests</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>AI Test Planning</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>REST API Ready</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative float-animation">
+                    <div class="bg-gradient-to-br from-purple-600/20 to-pink-600/20 backdrop-blur-xl border border-purple-500/30 rounded-2xl p-8 shadow-2xl">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between bg-black/30 p-4 rounded-lg">
+                                <span class="text-gray-300">Target API</span>
+                                <span class="text-purple-400 font-mono">localhost:5000</span>
+                            </div>
+                            <div class="bg-black/30 p-4 rounded-lg">
+                                <div class="text-sm text-gray-400 mb-2">Scan Progress</div>
+                                <div class="w-full bg-gray-700 rounded-full h-3 mb-2">
+                                    <div class="bg-gradient-to-r from-purple-500 to-pink-500 h-3 rounded-full" style="width: 75%"></div>
+                                </div>
+                                <div class="text-xs text-gray-500">9/12 tests completed</div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="bg-red-500/20 border border-red-500/30 p-4 rounded-lg">
+                                    <div class="text-3xl font-bold text-red-400">8</div>
+                                    <div class="text-sm text-gray-400">Vulnerabilities</div>
+                                </div>
+                                <div class="bg-green-500/20 border border-green-500/30 p-4 rounded-lg">
+                                    <div class="text-3xl font-bold text-green-400">2</div>
+                                    <div class="text-sm text-gray-400">Passed Tests</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 px-6 bg-black/30">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Powerful Features</h2>
+                <p class="text-xl text-gray-400">Everything you need for comprehensive API security testing</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-gradient-to-br from-purple-900/30 to-pink-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/50 transition">
+                    <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">AI-Powered Planning</h3>
+                    <p class="text-gray-400">Azure OpenAI analyzes your API and creates an intelligent, prioritized test plan before scanning</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="bg-gradient-to-br from-purple-900/30 to-pink-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/50 transition">
+                    <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">OWASP API Top 10</h3>
+                    <p class="text-gray-400">Complete coverage of all 9 critical API security risks: BOLA, broken auth, injection, and more</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="bg-gradient-to-br from-purple-900/30 to-pink-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/50 transition">
+                    <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Multiple Export Formats</h3>
+                    <p class="text-gray-400">Generate JSON, HTML, and PDF reports with detailed findings and remediation guidance</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="bg-gradient-to-br from-purple-900/30 to-pink-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/50 transition">
+                    <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Interactive CLI</h3>
+                    <p class="text-gray-400">User-friendly command-line interface with guided prompts and real-time progress indicators</p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="bg-gradient-to-br from-purple-900/30 to-pink-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/50 transition">
+                    <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">REST API Service</h3>
+                    <p class="text-gray-400">FastAPI-powered web service with Swagger docs for CI/CD integration and automation</p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="bg-gradient-to-br from-purple-900/30 to-pink-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-6 hover:border-purple-500/50 transition">
+                    <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Test Server Included</h3>
+                    <p class="text-gray-400">Intentionally vulnerable Flask API for testing and demonstration purposes</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">How It Works</h2>
+                <p class="text-xl text-gray-400">From setup to comprehensive security reports in minutes</p>
+            </div>
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">1</div>
+                    <h3 class="text-lg font-semibold mb-2">Install & Configure</h3>
+                    <p class="text-gray-400 text-sm">Clone repo, install dependencies, add Azure OpenAI keys (optional)</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">2</div>
+                    <h3 class="text-lg font-semibold mb-2">AI Analysis</h3>
+                    <p class="text-gray-400 text-sm">AI analyzes your API structure and creates smart test plan</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">3</div>
+                    <h3 class="text-lg font-semibold mb-2">Run Tests</h3>
+                    <p class="text-gray-400 text-sm">Execute OWASP Top 10 tests with real-time progress tracking</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">4</div>
+                    <h3 class="text-lg font-semibold mb-2">Get Reports</h3>
+                    <p class="text-gray-400 text-sm">Export detailed findings in JSON, HTML, or PDF format</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Start -->
+    <section id="get-started" class="py-20 px-6 bg-black/30">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold mb-4">Quick Start</h2>
+                <p class="text-xl text-gray-400">Get scanning in under 5 minutes</p>
+            </div>
+            <div class="bg-gradient-to-br from-purple-900/30 to-pink-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-8">
+                <div class="space-y-6">
+                    <div>
+                        <div class="text-sm text-purple-400 font-mono mb-2"># Clone the repository</div>
+                        <div class="bg-black/50 p-4 rounded-lg font-mono text-sm text-gray-300">
+                            git clone https://github.com/ashley-aa511/Smart-API-security-tester.git<br>
+                            cd Smart-API-security-tester
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-purple-400 font-mono mb-2"># Install dependencies</div>
+                        <div class="bg-black/50 p-4 rounded-lg font-mono text-sm text-gray-300">
+                            pip install -r requirements.txt
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-purple-400 font-mono mb-2"># Start test server (Terminal 1)</div>
+                        <div class="bg-black/50 p-4 rounded-lg font-mono text-sm text-gray-300">
+                            python test_api_server.py
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-purple-400 font-mono mb-2"># Run full scan (Terminal 2)</div>
+                        <div class="bg-black/50 p-4 rounded-lg font-mono text-sm text-gray-300">
+                            python test_full_scan.py
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 flex gap-4 justify-center">
+                    <a href="https://github.com/ashley-aa511/Smart-API-security-tester" target="_blank" class="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 px-6 py-3 rounded-lg font-semibold transition">
+                        View on GitHub
+                    </a>
+                    <a href="#docs" class="border-2 border-purple-500 hover:bg-purple-500/10 px-6 py-3 rounded-lg font-semibold transition">
+                        Read Full Docs
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold mb-4">Built With Modern Tech</h2>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
+                <div class="bg-gradient-to-br from-purple-900/30 to-pink-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-6 text-center">
+                    <div class="text-4xl mb-2">🐍</div>
+                    <div class="font-semibold">Python</div>
+                </div>
+                <div class="bg-gradient-to-br from-purple-900/30 to-pink-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-6 text-center">
+                    <div class="text-4xl mb-2">🤖</div>
+                    <div class="font-semibold">Azure OpenAI</div>
+                </div>
+                <div class="bg-gradient-to-br from-purple-900/30 to-pink-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-6 text-center">
+                    <div class="text-4xl mb-2">⚡</div>
+                    <div class="font-semibold">FastAPI</div>
+                </div>
+                <div class="bg-gradient-to-br from-purple-900/30 to-pink-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-6 text-center">
+                    <div class="text-4xl mb-2">🧪</div>
+                    <div class="font-semibold">Pytest</div>
+                </div>
+                <div class="bg-gradient-to-br from-purple-900/30 to-pink-900/30 backdrop-blur-xl border border-purple-500/20 rounded-xl p-6 text-center">
+                    <div class="text-4xl mb-2">📊</div>
+                    <div class="font-semibold">ReportLab</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 border-t border-purple-500/20">
+        <div class="max-w-7xl mx-auto text-center">
+            <div class="flex justify-center gap-8 mb-6">
+                <a href="https://github.com/ashley-aa511/Smart-API-security-tester" target="_blank" class="text-gray-400 hover:text-purple-400 transition">GitHub</a>
+                <a href="#docs" class="text-gray-400 hover:text-purple-400 transition">Documentation</a>
+                <a href="#get-started" class="text-gray-400 hover:text-purple-400 transition">Get Started</a>
+            </div>
+            <p class="text-gray-500">Built by Ashley and Gideon • OWASP API Security Testing Made Smart</p>
+        </div>
+    </footer>
+
+</body>
+</html>
