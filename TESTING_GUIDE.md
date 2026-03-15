@@ -107,7 +107,7 @@ From your Azure OpenAI resource page:
 Edit the `.env` file in the project root:
 
 ```bash
-AZURE_OPENAI_ENDPOINT=https://YOUR-RESOURCE-NAME.openai.azure.com/
+AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
 AZURE_OPENAI_API_KEY=abc123yourkeyhere
 AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o-mini
 AZURE_OPENAI_API_VERSION=2024-02-15-preview
