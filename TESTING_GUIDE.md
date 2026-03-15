@@ -1,294 +1,249 @@
-# Testing Guide - What Works Right Now
+# Smart API Security Tester — Testing Guide
 
-This guide shows you how to test the **working components** of the Smart API Security Tester.
+Full system is implemented. The only external requirement is **Azure OpenAI quota**.
 
-## Quick Start
+---
 
-### 1. Setup Environment
+## 1. Setup
 
 ```bash
-# Activate virtual environment (Windows)
+# Clone the repo
+git clone https://github.com/ashley-aa511/Smart-API-security-tester.git
+cd Smart-API-security-tester
+
+# Create and activate virtual environment (Windows)
+python -m venv venv
 .\venv\Scripts\Activate
 
 # Install dependencies
 pip install -r requirements.txt
 ```
 
-### 2. Configure Azure OpenAI
+---
 
-Edit `.env` file with your actual Azure credentials:
+## 2. Configure Environment
+
+Copy the `.env` file and fill in your Azure OpenAI credentials:
 
 ```bash
 AZURE_OPENAI_ENDPOINT=https://YOUR-RESOURCE.openai.azure.com/
-AZURE_OPENAI_API_KEY=YOUR-ACTUAL-KEY
-AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4
+AZURE_OPENAI_API_KEY=YOUR-API-KEY
+AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o-mini   # use your actual deployment name
 AZURE_OPENAI_API_VERSION=2024-02-15-preview
 ```
 
-**Don't have Azure OpenAI?** You can still test the vulnerable API server (Step 3).
-
----
-
-## What You Can Test
-
-### ✅ Test 1: Helper Functions (No Azure Required)
-
-Tests utility functions for URL validation, risk scoring, etc.
+Then verify your setup:
 
 ```bash
-python test_helpers.py
+python verify_setup.py
 ```
 
-**Expected Output:**
-```
-Testing Helper Functions
-==================================================
-
-1. URL Validation:
-   Valid URL: True
-   Invalid URL: False
-
-2. URL Sanitization:
-   Original: https://api.example.com/users?token=secret123
-   Sanitized: https://api.example.com/users
-
-3. Risk Score Calculation:
-   Summary: {'critical': 2, 'high': 3, 'medium': 5, 'low': 2}
-   Risk Score: 99/100
-   Risk Level: CRITICAL
-
-4. Group Results by Severity:
-   CRITICAL: 2 finding(s)
-   HIGH: 1 finding(s)
-
-✓ All helper functions working!
-```
+All items should show ✅ before proceeding.
 
 ---
 
-### ✅ Test 2: Vulnerable Test Server (No Azure Required)
+## 3. Start the Vulnerable Test Server
 
-Starts a Flask server with intentional security vulnerabilities.
+This is a safe, intentionally vulnerable Flask API used as the scan target.
+Run this in **Terminal 1** and leave it running.
 
-**Terminal 1 - Start server:**
 ```bash
 python test_api_server.py
 ```
 
-**Terminal 2 - Test endpoints:**
-```bash
-# Test BOLA (Broken Object Level Authorization)
-curl http://localhost:5000/api/user/1
-curl http://localhost:5000/api/user/admin
+Server runs at `http://localhost:5000` with these vulnerable endpoints:
 
-# Test unprotected admin endpoint
-curl http://localhost:5000/api/admin
-
-# Test weak password authentication
-curl -X POST http://localhost:5000/api/login \
-  -H "Content-Type: application/json" \
-  -d "{\"username\":\"admin\",\"password\":\"password\"}"
-
-# Test SQL injection
-curl "http://localhost:5000/api/search?q=test' OR '1'='1"
-
-# Test mass assignment
-curl -X POST http://localhost:5000/api/users \
-  -H "Content-Type: application/json" \
-  -d "{\"name\":\"Hacker\",\"role\":\"admin\",\"balance\":999999}"
-
-# View API documentation
-curl http://localhost:5000/api-docs
-```
-
-**What to expect:** You'll see responses demonstrating various vulnerabilities.
+| Endpoint | Vulnerability |
+|----------|--------------|
+| `GET /api/user/1` | BOLA — no ownership check |
+| `GET /api/admin` | No authentication required |
+| `POST /api/login` | Accepts weak passwords |
+| `POST /api/users` | Mass assignment |
+| `GET /api/search?q=` | SQL injection simulation |
+| `GET /api-docs` | Public API documentation |
 
 ---
 
-### ✅ Test 3: AI Coordinator Agent (Requires Azure)
+## 4. Run the Full CLI Scanner
 
-Tests the intelligent scan planning agent using Azure OpenAI.
+**Terminal 2** — runs all 9 OWASP tests against the test server:
+
+```bash
+python main.py
+```
+
+**When prompted:**
+- Target URL: `http://localhost:5000`
+- Headers: press Enter to skip
+- Tests: enter the number for "Run ALL tests"
+- Confirm: `y`
+
+**Expected output:**
+```
+╔═══════════════════════════════════════════════════════╗
+║       API Security Tester                             ║
+║       OWASP API Security Top 10 Scanner               ║
+╚═══════════════════════════════════════════════════════╝
+
+Starting Security Scan
+Target: http://localhost:5000
+Tests: 9
+
+  ⚠ Found 3 potential issue(s)   ← BOLA
+  ⚠ Found 2 potential issue(s)   ← Broken Auth
+  ✓ Passed                        ← SSRF
+  ...
+
+SCAN RESULTS
+======================================================================
+Vulnerabilities Found: X
+  CRITICAL: X
+  HIGH: X
+  MEDIUM: X
+```
+
+At the end, choose an export format:
+- `1` → JSON
+- `2` → HTML report (opens in browser)
+- `3` → PDF report
+- `4` → All formats
+
+---
+
+## 5. Run the AI Coordinator Agent  *(Requires Azure)*
+
+Uses Azure OpenAI to intelligently analyze the API and create a prioritized test plan.
 
 ```bash
 python src/agents/coordinator_agent.py
 ```
 
-**Expected Output:**
+**Expected output:**
 ```
 🤖 Coordinator Agent: Analyzing target API...
-✓ Analysis complete: [API Type] API
-  Data Sensitivity: [Level]
-  Auth Method: Bearer Token
+✓ Analysis complete: User Management REST API
+  Data Sensitivity: Medium
+  Auth Method: None
 
 🤖 Coordinator Agent: Creating scan plan...
-✓ Plan created: X tests prioritized
-  Estimated duration: Y minutes
+✓ Plan created: 5 tests prioritized
+  Estimated duration: 12 minutes
 
-============================================================
-SCAN PLAN RESULTS
-============================================================
 {
   "api_analysis": {
     "api_type": "REST",
-    "auth_method": "Bearer Token",
-    "data_sensitivity": "High",
-    ...
+    "auth_method": "None",
+    "data_sensitivity": "Medium",
+    "risk_areas": ["authentication", "authorization", "bola"]
   },
   "scan_plan": {
     "priority_tests": [...],
-    "recommended_order": [...],
-    ...
+    "recommended_order": ["API1", "API2", "API5", "API10", "API8"],
+    "estimated_duration_minutes": 12
   }
 }
 ```
 
 ---
 
-### ✅ Test 4: Integration Test (Requires Both)
+## 6. Run the Integration Test  *(Requires Azure + Test Server)*
 
-Demonstrates AI agent analyzing the vulnerable test server.
+Demonstrates AI planning + scanner working together end-to-end.
 
-**Prerequisites:**
-1. Test server running: `python test_api_server.py` (Terminal 1)
-2. Azure credentials configured in `.env`
+**Terminal 1:** `python test_api_server.py`
 
-**Run test (Terminal 2):**
+**Terminal 2:**
 ```bash
 python test_integration.py
 ```
 
-**What it does:**
-- AI agent analyzes the test server endpoints
-- Identifies API type, authentication methods, risk areas
-- Creates intelligent scan plans for different scenarios
-- Shows how AI prioritizes tests based on vulnerability likelihood
+This runs the Coordinator Agent against 3 different scenarios on the test server
+and shows how AI adapts its scan plan based on what it finds.
 
-**Expected Output:**
+---
+
+## 7. Run the FastAPI Web Service
+
+Exposes the scanner as a REST API for programmatic access.
+
+```bash
+uvicorn src.api.main:app --reload --port 8000
 ```
-======================================================================
-INTEGRATION TEST: AI Coordinator + Vulnerable Test Server
-======================================================================
 
-SCENARIO 1: Anonymous User Access
-======================================================================
-Target: http://localhost:5000/api/user/1
-Headers: None
+**Endpoints:**
 
-🤖 Coordinator Agent: Analyzing target API...
-✓ Analysis complete: REST API
-  Data Sensitivity: Medium
-  Auth Method: None
+| Method | URL | Description |
+|--------|-----|-------------|
+| `GET` | `/health` | Health check |
+| `POST` | `/api/v1/scan` | Start a scan (async) |
+| `GET` | `/api/v1/scan/{id}` | Get scan results |
+| `GET` | `/api/v1/scans` | List all scans |
+| `POST` | `/api/v1/plan` | AI planning only (no scan) |
+| `GET` | `/docs` | Swagger UI |
 
-----------------------------------------------------------------------
-AI ANALYSIS RESULTS:
-----------------------------------------------------------------------
+**Start a scan via API:**
+```bash
+# PowerShell
+Invoke-RestMethod -Uri "http://localhost:8000/api/v1/scan" `
+  -Method POST `
+  -ContentType "application/json" `
+  -Body '{"target_url": "http://localhost:5000", "use_ai_planning": false}'
+```
 
-API Type: REST
-Auth Method: None
-Data Sensitivity: Medium
-Domain: User Management
-Key Risk Areas:
-  • authentication
-  • authorization
-  • data_exposure
+**Get results:**
+```bash
+Invoke-RestMethod -Uri "http://localhost:8000/api/v1/scan/YOUR-SCAN-ID"
+```
 
-Reasoning: Endpoint allows unauthenticated access to user data...
+Or visit `http://localhost:8000/docs` for the interactive Swagger UI.
 
-----------------------------------------------------------------------
-RECOMMENDED SCAN PLAN:
-----------------------------------------------------------------------
+---
 
-Priority Tests (5):
-  [CRITICAL] Broken Object Level Authorization
-  Reason: No authentication detected, high BOLA risk
+## 8. Run Tests
 
-  [CRITICAL] Broken Authentication
-  Reason: Unauthenticated endpoint accessing sensitive data
+```bash
+# All tests
+python -m pytest tests/ -v
 
-...
+# Helpers only
+python test_helpers.py
 ```
 
 ---
 
-## What Does NOT Work (Yet)
+## What's Implemented
 
-❌ **Main CLI Scanner** - `python main.py` will fail
-- Missing `tests/vulnerability_tests.py` file
-- No OWASP test implementations exist
-
-❌ **Actual Security Scanning** - Cannot run real vulnerability tests
-- Only AI planning works, not execution
-
-❌ **Report Generation** - No scan data to generate reports from
+| Component | Status | Requires Azure |
+|-----------|--------|---------------|
+| 9 OWASP API Security Top 10 tests | ✅ | No |
+| CLI interactive scanner (`main.py`) | ✅ | No |
+| HTML report generator | ✅ | No |
+| PDF report generator | ✅ | No |
+| Vulnerable test server | ✅ | No |
+| AI Coordinator Agent | ✅ | **Yes** |
+| FastAPI web service | ✅ | Optional |
+| Azure OpenAI service wrapper | ✅ | **Yes** |
 
 ---
 
 ## Troubleshooting
 
-### Import Errors
-
-```
-ModuleNotFoundError: No module named 'rich'
-```
-
-**Fix:** Install dependencies
+**`ModuleNotFoundError`**
 ```bash
 pip install -r requirements.txt
 ```
 
-### Azure OpenAI Errors
+**`DeploymentNotFound` or `InsufficientQuota`**
+- Check your deployment name in Azure AI Foundry
+- Request quota increase at [ai.azure.com](https://ai.azure.com) → Management → Quota
 
-```
-openai.AuthenticationError: Incorrect API key provided
-```
-
-**Fix:** Update `.env` with valid Azure credentials
-
-### Test Server Not Running
-
-```
-Failed to connect to localhost:5000
-```
-
-**Fix:** Start test server in another terminal
+**`Connection refused` on localhost:5000**
 ```bash
-python test_api_server.py
+python test_api_server.py  # must be running in another terminal
 ```
 
-### Environment Not Activated
-
-```
-python: command not found (or wrong Python version)
-```
-
-**Fix:** Activate virtual environment
+**Virtual environment not active** — you'll see missing module errors
 ```bash
-.\venv\Scripts\Activate  # Windows
+.\venv\Scripts\Activate   # Windows
 source venv/bin/activate  # Linux/Mac
 ```
-
----
-
-## Summary of Working Components
-
-| Component | Status | Requires Azure | Command |
-|-----------|--------|---------------|---------|
-| Helper Functions | ✅ Working | No | `python test_helpers.py` |
-| Test API Server | ✅ Working | No | `python test_api_server.py` |
-| AI Coordinator Agent | ✅ Working | Yes | `python src/agents/coordinator_agent.py` |
-| Integration Demo | ✅ Working | Yes | `python test_integration.py` |
-| Main Scanner | ❌ Broken | - | `python main.py` (fails) |
-| Vulnerability Tests | ❌ Missing | - | Not implemented |
-
----
-
-## Next Steps for Development
-
-To make the full scanner work, you need to:
-
-1. **Create vulnerability test implementations** (`tests/vulnerability_tests.py`)
-2. **Integrate Coordinator Agent with Scanner** (connect AI planning to test execution)
-3. **Add Scanner Agent** (executes tests from AI-generated plans)
-4. **Connect report generators** (use actual scan results)
-
-For now, the **integration test** (`test_integration.py`) shows the best demonstration of working AI-powered capabilities.
