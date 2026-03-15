@@ -16,10 +16,10 @@ env/
 .idea/
 *.swp
 
-# Reports
-reports/
-*.pdf
-*.html
+# Generated report output files (not source code)
+security_report_*.pdf
+security_report_*.html
+scan_*.json
 
 # Azure
 .azure/

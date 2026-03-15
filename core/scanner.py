@@ -4,6 +4,7 @@ Orchestrates security tests and manages scan sessions
 """
 
 import sys
+from pathlib import Path
 from typing import Dict, List, Any, Optional
 from datetime import datetime
 import json
@@ -13,7 +14,7 @@ from rich.panel import Panel
 from rich.table import Table
 from rich import box
 
-sys.path.append('/home/claude/api-security-tester')
+sys.path.insert(0, str(Path(__file__).parent.parent))
 from tests.vulnerability_tests import ALL_TESTS
 
 
