@@ -1,29 +1,75 @@
-﻿# Environment files
+# ── Credentials & secrets ──────────────────────────────────────────────────────
 .env
-.env.local
+.env.*
+!.env.example
+secrets.json
+credentials.json
+*.pem
+*.key
+*.cert
+*.p12
+*.pfx
+service_account*.json
+azure_credentials.json
 
-# Python
+# ── config (never commit) ─────────────────────────────────────────
+*.md
+.cursorrules
+.cursor/
+.copilot/
+.github/copilot-instructions.md
+
+# ── Python ─────────────────────────────────────────────────────────────────────
 __pycache__/
 *.py[cod]
-*.class
 *.so
 .Python
 venv/
 env/
+.venv/
+pip-wheel-metadata/
+*.egg-info/
+dist/
+build/
+.eggs/
 
-# IDEs
-.vscode/
-.idea/
-*.swp
+# ── Testing & coverage ─────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+*.coverage
 
-# Generated report output files (not source code)
+# ── Type checking ──────────────────────────────────────────────────────────────
+.mypy_cache/
+.dmypy.json
+.ruff_cache/
+
+# ── Generated report output files (not source code) ────────────────────────────
 security_report_*.pdf
 security_report_*.html
 scan_*.json
 
-# Azure
-.azure/
+# ── IDEs ───────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*.suo
+*.user
 
-# OS
+# ── Azure & cloud ──────────────────────────────────────────────────────────────
+.azure/
+.terraform/
+*.tfstate
+*.tfstate.backup
+.pulumi/
+
+# ── OS ─────────────────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
+desktop.ini
+
+# ── Logs ───────────────────────────────────────────────────────────────────────
+*.log
+logs/
